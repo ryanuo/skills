@@ -1,75 +1,50 @@
 ---
 name: organize-bookmarks
-description: Organize exported browser bookmarks into concise Chinese tagged folders and shortened bookmark names. Use when the user provides Chrome/Edge/Netscape bookmark HTML files, asks to整理书签, classify bookmark tags, shorten bookmark titles, remove exact duplicates, isolate dead/local/session links, or generate an importable reorganized bookmarks HTML.
+description: Organize exported browser bookmarks into categorized folders, shorten bookmark titles, remove exact duplicates, and generate an importable bookmark HTML.
 ---
 
 # Organize Bookmarks
 
 ## Workflow
 
-1. Read the user's exported bookmark HTML. Chrome and Edge exports usually use the Netscape bookmark format.
-2. Preserve the original file; generate new artifacts instead of overwriting the source.
-3. Run `scripts/organize_bookmarks.js` to create:
-   - a cleaned, importable bookmark HTML
-   - a Markdown summary
-   - a CSV inventory
-4. Tell the user that browsers import HTML bookmark files, not CSV.
-5. If the user wants live link checking, run a separate network check only after approval when network access requires it. Treat command-line failures as review candidates, not automatic delete decisions.
+1. **AI 配置生成阶段** (首次使用或规则变更时):
+   - 运行采样命令: `node scripts/analyze_bookmarks.js <input.html>`
+   - 将终端输出的 JSON 数据提供给 AI，并附带以下 Prompt：
+     > "请根据我提供的书签样本，生成一个完整的 `config.js` 文件。要求：自动推断 5-12 个顶层分类；生成域名品牌映射 (domainBrands)、标题清洗正则 (titleAliases) 和分类规则引擎 (categorizationRules)；确保分类规则按优先级排序，并将默认兜底规则放在最后。"
+   - 将 AI 生成的代码保存为 `scripts/config.js`。
 
-## Default Tags
+2. **执行整理阶段**:
+   - 运行整理命令: `node scripts/organize_bookmarks.js <input.html> <output-dir> [link-check.json]`
+   - 脚本将读取 `config.js` 并执行整理。
 
-Use these top-level folders unless the user gives a different taxonomy:
+3. **输出与说明**:
+   - 保留原始文件。
+   - 生成 `bookmarks_clean_names.html`、`bookmark_summary.md`、`bookmark_inventory.csv`。
+   - 明确告知用户：浏览器仅支持导入 HTML 格式的书签文件，CSV 仅供人工审阅。
 
-- `常用`
-- `AI`
-- `开发`
-- `学习`
-- `工具`
-- `博客`
-- `娱乐`
-- `其他`
-- `归档待清理`
+4. **失效链接处理**:
+   - 若提供 link-check 数据，自动将死链归入 `归档待清理/失效候选`。
 
-Use these common subfolders:
+## Classification Guidelines
 
-- `常用`: `邮箱`, `账号后台`
-- `AI`: `模型`, `API`, `图片`, `网络`
-- `开发`: `前端`, `面试算法`, `代码托管`, `Linux`, `STM32`
-- `学习`: `论文`, `编程`, `考试`
-- `工具`: `在线`, `设计`, `部署图床`, `导航`
-- `博客`: `Hexo`, `运营`, `素材`
-- `娱乐`: `影视`, `动漫漫画`
-- `归档待清理`: `失效候选`, `本地旧路径`, `登录态链接`, `旧资料`
+- 自动推断分类，保持 5–12 个顶层文件夹。
+- 常见分类：常用、工作、学习、开发、AI、工具、云服务、设计、娱乐、社交、购物、新闻资讯、归档待清理。
+- 仅创建实际需要的分类，合并高度相似的文件夹，避免过度嵌套和单书签文件夹。
 
 ## Naming Rules
 
-Shorten bookmark titles conservatively:
+- 保守缩短标题。
+- 移除：网站后缀 (`- GitHub`, `- Medium`)、SEO 填充词 (`官网`, `最新`, `最全`, `免费下载`)、重复的品牌名。
+- 保留：产品名、项目名、仓库名、核心关键词。
+- 示例：`GitHub - owner/repo` → `owner/repo`；`Vue3 Tutorial - Medium` → `Vue3 Tutorial`。
 
-- Keep recognizable product names and purpose words.
-- Remove source suffixes such as `- 掘金`, `- CSDN博客`, `| 知乎`, `- GitHub`.
-- Remove SEO filler such as `专业`, `最新`, `最全`, `免费下载`, `官网`, `一站式`.
-- Prefer clear short names like `Gmail`, `腾讯云域名`, `前端面试题`, `网易云API`.
-- Do not shorten so aggressively that unrelated bookmarks collapse into the same ambiguous name.
+## Duplicate & Archive Rules
 
-## Script
+- 仅移除完全相同的 URL，不合并不同文章或文档。
+- 将可疑书签移入归档：`localhost`、`file://`、过期链接、临时登录 URL。
+- **永远不要永久删除任何书签。**
 
-Run:
+## Commands
 
-```bash
-node /path/to/organize-bookmarks/scripts/organize_bookmarks.js input.html output-dir
-```
-
-Optional third argument:
-
-```bash
-node scripts/organize_bookmarks.js input.html output-dir path/to/bookmark_link_check.json
-```
-
-When a link-check JSON is provided, URLs marked `dead` are routed to `归档待清理/失效候选`.
-
-## Safety
-
-- Do not edit the user's live browser bookmarks directly.
-- Do not delete original exports.
-- Put risky links in `归档待清理` instead of silently dropping them.
-- Exact duplicate URLs may be de-duplicated in the generated draft; mention this in the summary.
+- 提取样本供 AI 分析: `node scripts/analyze_bookmarks.js <input.html>`
+- 执行书签整理: `node scripts/organize_bookmarks.js <input.html> <output-dir>
