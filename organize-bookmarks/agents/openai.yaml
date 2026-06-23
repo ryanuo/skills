@@ -1,0 +1,4 @@
+interface:
+  display_name: "整理书签"
+  short_description: "按中文标签整理书签并生成短名导入版"
+  default_prompt: "Use $organize-bookmarks to reorganize my exported Chrome bookmarks into concise tagged folders."
