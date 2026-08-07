@@ -8,4 +8,4 @@
 |---|---|---|
 | [organize-bookmarks](./skills/organize-bookmarks) | 浏览器书签整理 | [README.md](./skills/organize-bookmarks/README.md) |
 | [ryanuo-ip-skill](./skills/ryanuo-ip-skill) | RYANUO 个人 IP 配图 | [README.md](./skills/ryanuo-ip-skill/README.md) |
-| [wechat-article-workflow](./skills/wechat-article-workflow) | 微信公众号技术文章全流程 | [README.md](./skills/wechat-article-workflow/README.md) |
+| [wechat-article-workflow](./skills/wechat-article-workflow) | 微信公众号文章全流程（方向先询问） | [README.md](./skills/wechat-article-workflow/README.md) |
