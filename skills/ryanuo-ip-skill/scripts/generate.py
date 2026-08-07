@@ -71,10 +71,10 @@ def read_prompt_file(p: str):
 
 
 def aspect_to_size(aspect: str) -> str:
-    """openai-sync 用:映射到 gpt-image 合法尺寸档(横/竖/方)。"""
+    """openai-sync 用:映射到 gpt-image 合法尺寸档(横/竖/方)。支持小数比例(如 2.35:1)。"""
     try:
         w, h = aspect.split(":")
-        w, h = int(w), int(h)
+        w, h = float(w), float(h)
     except Exception:
         return "1024x1024"
     if w > h:
@@ -320,6 +320,47 @@ def run_sync(base_url, model, api_key, body, aspect, refs, out):
     eprint(f"[失败] 两次都没成: {last_err}"); sys.exit(1)
 
 
+def post_wx_cover(out: str, result: dict) -> str:
+    """公众号封面后处理:原图(横版 1536x1024)→ 居中裁剪 2.35:1 → 缩放 900x383。
+
+    用 macOS 自带 sips(零第三方依赖);不可用/失败时保留原图并提示手动裁剪。
+    原图重命名为 <stem>.full.<ext> 保留,成品写回 out。
+    """
+    import shutil, subprocess as sp
+    src = pathlib.Path(out)
+    if not src.exists():
+        return out
+    if shutil.which("sips") is None:
+        eprint("[封面] 未找到 sips(仅 macOS 自带):已保留原图,请手动裁剪至 900x383(2.35:1)")
+        return out
+    wh = _image_dims(src.read_bytes())
+    if not wh:
+        eprint("[封面] 读不到原图尺寸:跳过裁剪,请手动裁剪至 900x383(2.35:1)")
+        return out
+    w, h = wh
+    crop_h = max(1, round(w / 2.35))  # 以宽为准的 2.35:1 高度
+    if crop_h >= h:
+        crop_h = h  # 原图已够扁,只缩放不裁
+    full = src.with_name(src.stem + ".full" + src.suffix)
+    try:
+        src.rename(full)
+        tmp = src.with_name(src.stem + ".crop.png")
+        sp.run(["sips", "-c", str(crop_h), str(w), str(full), "--out", str(tmp)],
+               check=True, capture_output=True)
+        sp.run(["sips", "-z", "383", "900", str(tmp), "--out", out],
+               check=True, capture_output=True)
+        tmp.unlink(missing_ok=True)
+        result["wx_cover"] = "900x383"
+        result["full"] = str(full)
+        eprint(f"[封面] 已裁剪缩放为 900x383(2.35:1);原图保留 {full}")
+        return out
+    except Exception as e:
+        eprint(f"[封面] sips 裁剪失败({e}):原图保留,请手动裁剪至 900x383")
+        if not src.exists() and full.exists():
+            full.rename(src)
+        return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--prompt-file", required=True)
@@ -358,6 +399,9 @@ def main():
             result["width"], result["height"] = wh
     except Exception:
         pass
+    # 公众号封面:2.35:1(900x383) → sips 居中裁剪+缩放(macOS 自带,零依赖)
+    if aspect in ("2.35:1", "900:383"):
+        out = post_wx_cover(out, result)
     print(json.dumps(result, ensure_ascii=False))
 
 

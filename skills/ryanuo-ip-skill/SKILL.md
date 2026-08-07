@@ -86,6 +86,7 @@ LABELS / COLORS / ASPECT 收尾
 - 对比图/流程横排 → `4:3`（移动端封顶，**不写 16:9**）
 - 竖内容（阶梯/漏斗/单角色立姿）→ `3:4`
 - 方/单概念 → `1:1`
+- **公众号封面 → `2.35:1`（900×383）**：用户提到"公众号封面/微信封面"时用这个比例，prompt 第一句写 HORIZONTAL，并提示模型把关键内容放中心区域（上下会被裁）
 - prompt 第一句的方向词必须和比例联动（HORIZONTAL↔4:3 / VERTICAL↔3:4），改漏会变形
 
 ### 4. 生图（自带脚本，纯标准库零依赖）
@@ -114,6 +115,7 @@ Generate one standalone 4:3 horizontal Chinese article infographic: ...
 
 - 文生图走 `/images/generations`，图生图走 `/images/edits`（gpt-image 系列）
 - `aspect_ratio` 自动映射合法尺寸档：横 `1536x1024` / 竖 `1024x1536` / 方 `1024x1024`
+- **`2.35:1`（公众号封面）**：生成横版后脚本自动用 sips 居中裁剪+缩放为 **900×383**，原图保留为 `*.full.*`
 - 失败自动重试（sync 2 次 / task 3 次），不在挂掉的 API 上死磕
 - 没有配置/不想用脚本时，交付 prompt 即可，用户自行拿去生图（GPT-image-2 / Midjourney / 即梦等均可，形象段是通用英文描述）
 
