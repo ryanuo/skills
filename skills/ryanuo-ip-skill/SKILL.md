@@ -51,8 +51,10 @@ IP: RYANUO — a cute chibi Q-version cartoon character, round baby face with li
 
 拿到主题后**先停下来问用户**：这次要**图片**还是**提示词**？
 
-- **图片** → 走生图流程（需要生成后端/API key 已配置）
+- **图片** → 需要 API key 已配置（`scripts/illo.py doctor` 显示 key 已填），走生图流程
 - **提示词** → 只交付可直接复制的英文 prompt，用户自己拿去生图
+
+**未配置 key 时**：默认走提示词模式（这是 skill 的默认行为）。用户要图片但没 key，提示先跑 `init` 补 key，或改走提示词模式。
 
 用户没说"你定"前不许默认，每次都要问。
 
@@ -89,17 +91,17 @@ LABELS / COLORS / ASPECT 收尾
 ### 4. 生图（自带脚本，纯标准库零依赖）
 
 ```bash
-# 首次使用先配置 API key（引导式，key 只存本地 ~/.config/ryanuo-ip-skill/config.yaml mode 600）
+# 首次使用先配置 API key（可选！key 不填也能完成初始化，默认走生成提示词模式）
 python3 scripts/illo.py init
 
-# 自检：key / 素材库 / 脚本是否就绪
+# 自检：模式（提示词/生图）/ 素材库 / 脚本是否就绪
 python3 scripts/illo.py doctor
 
-# 生图（--reference 传锚点图锁角色；不传则文生图）
+# 生图（--reference 传锚点图锁角色；不传则文生图）—— 需 key 已填
 python3 scripts/generate.py --prompt-file <p.md> --reference reference/assets/ip/RYANUO人物.png --out <输出路径>
 ```
 
-**配置**：支持任何 OpenAI 兼容图像端点（base_url / model / api_key），默认 `gpt-image-2`（中文渲染最稳）。没有配置时跑 `init` 引导填写。
+**配置**：支持任何 OpenAI 兼容图像端点（base_url / model / api_key），默认 `gpt-image-2`（中文渲染最稳）。**key 可不填**——初始化时直接回车跳过，默认走【生成提示词】模式（只交付 prompt）；需要生图时重跑 `init` 补 key 即可。
 
 **prompt 文件格式**（YAML 头 `aspect_ratio` 必填 + 正文）：
 

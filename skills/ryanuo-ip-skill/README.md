@@ -19,17 +19,20 @@
    - 情绪图（封面/结尾/态度）→ 角色可以大（40-60%）
 4. **交付**：prompt 或图片，附带角色动作说明
 
-## 生图配置（首次使用）
+### 生图配置（可选）
 
 ```bash
 cd skills/ryanuo-ip-skill
 
-# 配置 API key（引导式，key 只存本地 ~/.config/ryanuo-ip-skill/config.yaml）
+# 初始化（key 可不填！直接回车跳过，默认走生成提示词模式）
 python3 scripts/illo.py init
 
-# 自检：key / 素材库 / 脚本是否就绪
+# 自检：当前模式（提示词/生图）/ 素材库 / 脚本是否就绪
 python3 scripts/illo.py doctor
 ```
+
+- **key 不填也 OK**：默认【生成提示词】模式，只交付 prompt，自己拿去生图
+- 需要 AI 直接出图时：重跑 `init` 填 key（支持任何 OpenAI 兼容端点，key 只存本地）
 
 ## 手动命令
 

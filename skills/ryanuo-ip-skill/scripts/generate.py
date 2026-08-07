@@ -46,7 +46,9 @@ def load_config() -> dict:
         sys.exit(2)
     cfg = parse_simple_yaml(CONFIG_PATH.read_text(encoding="utf-8"))
     if not cfg.get("api_key") or cfg["api_key"].startswith("<"):
-        eprint("[错误] config 里没有有效 api_key,跑 `python3 scripts/illo.py init`")
+        eprint("[错误] config 里没有有效 api_key(生图必须配 key)。\n"
+               "  · 补 key: python3 scripts/illo.py init\n"
+               "  · 或改用【生成提示词】模式:不跑生图,直接交付 prompt 即可")
         sys.exit(2)
     return cfg
 
