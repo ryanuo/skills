@@ -91,7 +91,7 @@ print(html.unescape(body))
 **交付格式（用户 2026-08 明确要求）**：prompt 直接内嵌在文章占位处，方便用户复制生图和随手调整：
 
 ````markdown
-> 📍 图片占位 1 · 封面图（2.35:1 公众号封面，生成后替换本块）
+> 📍 图片占位 1 · 封面图（2.35:1 公众号封面，生成后替换本块）- 图片的 alt 描述简短概括
 
 ```text
 Generate one standalone 2.35:1 horizontal Chinese article cover banner...
