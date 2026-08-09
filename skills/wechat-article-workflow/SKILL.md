@@ -81,7 +81,7 @@ print(html.unescape(body))
 ### 4. 配图方案（按方向）
 
 - **技术教程 / 带个人 IP 的文章** → 加载 `personal-ip-skill` 获取形象锁定段唯一真源，读 `/Users/ryanuo/dev/skills/skills/ryanuo-ip-skill/SKILL.md`，用 RYANUO 插画：
-  - **公众号封面 → 2.35:1（900×383）**，prompt 第一句 HORIZONTAL，关键内容放中心安全区
+  - **公众号封面 → 2.35:1（900×383）**，直接用 `references/cover-prompt.md` 模板（视觉总监风 + RYANUO IP，用户指定的封面风格），填标题即可；prompt 第一句 HORIZONTAL，关键内容放中心安全区
   - 解释图（流程/对比）→ 4:3，角色小（~15%）嵌入结构当行动者
   - 情绪图（封面/结尾）→ 4:3，角色大（40-60%）
   - 形象锁定段**原样复制不改写**；胸前 "Ryanuo" 手写字保留；同墨同线、配色 MUTED；中文标注 2-8 字
