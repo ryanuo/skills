@@ -10,6 +10,9 @@
 | [ryanuo-ip-skill](./skills/ryanuo-ip-skill) | RYANUO 个人 IP 配图 | [README.md](./skills/ryanuo-ip-skill/README.md) |
 | [wechat-article-workflow](./skills/wechat-article-workflow) | 微信公众号文章全流程（方向先询问） | [README.md](./skills/wechat-article-workflow/README.md) |
 | [remove-bg](./skills/remove-bg) | 图片去白底/去背景 + 自动裁剪 | [README.md](./skills/remove-bg/README.md) |
+| [qt-qml-component](./skills/qt-qml-component) | QML 组件开发规则（尺寸/焦点/委托/主题令牌/性能） | [README.md](./skills/qt-qml-component/README.md) |
+| [qt-widgets-control](./skills/qt-widgets-control) | Widgets 自绘控件规则（paintEvent/高 DPI/命中/QSS 边界） | [README.md](./skills/qt-widgets-control/README.md) |
+| [qt-component-review](./skills/qt-component-review) | Qt 组件代码评审（确定性 lint + 语义分析 + 置信度报告） | [README.md](./skills/qt-component-review/README.md) |
 
 ## 目录结构
 
